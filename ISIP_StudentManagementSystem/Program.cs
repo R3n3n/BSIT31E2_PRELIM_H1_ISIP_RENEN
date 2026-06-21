@@ -1,10 +1,7 @@
-﻿using System.ComponentModel.Design;
 using System;
+using System.Collections.Generic;
 
-List<string> studNames = new List<string>();
-List<int> studGrade1 = new List<int>();
-List<int> studGrade2 = new List<int>();
-List<int> studGrade3 = new List<int>();
+List<Student> students = new List<Student>();
 
 while (true)
 {
@@ -16,50 +13,52 @@ while (true)
     Console.WriteLine("5. Exit");
     Console.WriteLine("========================");
     Console.Write("Choose an option: ");
-    string opt = Console.ReadLine();
 
+    string opt = Console.ReadLine();
 
     if (opt == "1")
     {
         Console.Write("\nEnter student name: ");
-        string studName = Console.ReadLine();
-        studNames.Add(studName);
+        string name = Console.ReadLine();
+
         Console.Write("Enter grade 1: ");
-        int firstGrade = int.Parse(Console.ReadLine());
-        studGrade1.Add(firstGrade);
+        int grade1 = int.Parse(Console.ReadLine());
+
         Console.Write("Enter grade 2: ");
-        int secondGrade = int.Parse(Console.ReadLine());
-        studGrade2.Add(secondGrade);
+        int grade2 = int.Parse(Console.ReadLine());
+
         Console.Write("Enter grade 3: ");
-        int thirdGrade = int.Parse(Console.ReadLine());
-        studGrade3.Add(thirdGrade);
-        Console.WriteLine("Student added successfully! ");
+        int grade3 = int.Parse(Console.ReadLine());
+
+        Student student = new Student(name, grade1, grade2, grade3);
+
+        students.Add(student);
+
+        Console.WriteLine("Student added successfully!");
     }
 
     else if (opt == "2")
     {
-        if (studNames.Count == 0)
+        if (students.Count == 0)
         {
             Console.WriteLine("No students found!");
         }
         else
         {
-            for (int i = 0; i < studNames.Count; i++)
+            Console.WriteLine("\n==== STUDENT LIST ====");
+
+            foreach (Student student in students)
             {
-                double average = (studGrade1[i] + studGrade2[i] + studGrade3[i]) / 3.00;
-                Console.WriteLine($"\nName: {studNames[i]}");
-                Console.WriteLine($"Grades: {studGrade1[i]}, {studGrade2[i]}, {studGrade3[i]}");
-                Console.WriteLine($"Average: {average:F2}");
-
+                Console.WriteLine($"\nName: {student.Name}");
+                Console.WriteLine($"Grades: {student.Grade1}, {student.Grade2}, {student.Grade3}");
+                Console.WriteLine($"Average: {student.GetAverage():F2}");
             }
-
         }
-
     }
 
     else if (opt == "3")
     {
-        if (studNames.Count == 0)
+        if (students.Count == 0)
         {
             Console.WriteLine("No students found!");
         }
@@ -67,12 +66,12 @@ while (true)
         {
             double totalAverage = 0;
 
-            for (int i = 0; i < studNames.Count; i++)
+            foreach (Student student in students)
             {
-                double studAverage = (studGrade1[i] + studGrade2[i] + studGrade3[i]) / 3.00;
-                totalAverage += studAverage;
+                totalAverage += student.GetAverage();
             }
-            double classAverage = totalAverage / studNames.Count;
+
+            double classAverage = totalAverage / students.Count;
 
             Console.WriteLine("\n==== CLASS AVERAGE ====");
             Console.WriteLine($"Overall Average Grade: {classAverage:F2}");
@@ -81,27 +80,26 @@ while (true)
 
     else if (opt == "4")
     {
-        if (studNames.Count == 0)
+        if (students.Count == 0)
         {
             Console.WriteLine("No students found!");
         }
         else
         {
-            string topStudent = "";
-            int highestGrade = -1;
+            Student topStudent = students[0];
+            int highestGrade = topStudent.GetHighestGrade();
 
-            for (int i = 0; i < studNames.Count; i++)
+            foreach (Student student in students)
             {
-                int highestStudent = Math.Max(studGrade1[i], Math.Max(studGrade2[i], studGrade3[i]));
-
-                if (highestStudent > highestGrade)
+                if (student.GetHighestGrade() > highestGrade)
                 {
-                    highestGrade = highestStudent;
-                    topStudent = studNames[i];
+                    highestGrade = student.GetHighestGrade();
+                    topStudent = student;
                 }
             }
+
             Console.WriteLine("\n==== HIGHEST GRADE ====");
-            Console.WriteLine($"Top Student: {topStudent}");
+            Console.WriteLine($"Top Student: {topStudent.Name}");
             Console.WriteLine($"Highest Grade: {highestGrade}");
         }
     }
@@ -115,6 +113,5 @@ while (true)
 
     else
     {
-        Console.WriteLine("\nInvalid Input! Please input numbers from 1-5 only.");
+        Console.WriteLine("\nInvalid input! Please choose 1-5 only.");
     }
-}
